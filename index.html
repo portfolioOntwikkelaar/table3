@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyberpunk Network Layout</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #0e0e0e;
+      color: #00ffee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    h1, h2 {
+      text-shadow: 0 0 10px #00ffee;
+      text-align: center;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      margin: 1rem auto;
+      box-shadow: 0 0 20px #00ffee55;
+      background: #1a1a1a;
+    }
+
+    th, td {
+      border: 1px solid #00ffee44;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: #111111;
+      color: #00ffee;
+    }
+
+    td {
+      color: #ccfaff;
+    }
+
+    .console {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(135deg, rgba(255, 105, 180, 0.3) 25%, rgba(50, 205, 50, 0.3) 50%, rgba(147, 112, 219, 0.3) 75%);
+      color: #fff;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 1rem;
+      margin-top: 2rem;
+      border: 2px solid #ffffff33;
+      box-shadow: 0 0 15px #ffffff88;
+      white-space: pre-wrap;
+      border-radius: 8px;
+    }
+
+    @media screen and (max-width: 600px) {
+      table, .console {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Cyberpunk Netwerk</h1>
+
+  <div class="console">
+    cs-department: enable console 0;
+    password cisco;
+    login;
+    line vty 0 4;
+    password cisco;
+    login;
+    exit;
+    security passwords min-length 10;
+    service password-encryption;
+    username netadmin secret Cisco_CCNA7;
+    ip domain-name cisco.com;
+    crypto key generate rsa; 1024;
+    ip ssh version 2;
+    ipv6 unicast-routing;
+    line vty 0 4;
+    login local;
+    transport input ssh;
+    int g0/0;
+    ip add 192.168.1.126 255.255.255.225;
+    ipv6 add 2001:db8:acad:a::1/64;
+    ipv6 add fe90::1 link-local;
+    no shut;
+    description Connected to LAB 124-C Switch;
+    int g0/1;
+    ip add 192.168.1.158 255.255.255.240;
+    ipv6 add 2001:db8:acad:b::1/64;
+    ipv6 add fe90::1 link-local;
+    description Connected to LAB 214-A Switch;
+    no shut;
+
+    ! switch 2
+    int vlan 1;
+    ip add 192.168.1.157 255.255.255.240;
+    exit;
+    ip default-gateway 192.168.1.158;
+    int vlan 1;
+    description SVI for Management;
+    no shut;
+  </div>
+
+  <h2>CIDR Subnet Table</h2>
+  <table>
+    <tr><th>CIDR</th><th>Mask</th><th>Hosts</th><th>Block Size</th></tr>
+    <tr><td>/30</td><td>255.255.255.252</td><td>2</td><td>4</td></tr>
+    <tr><td>/29</td><td>255.255.255.248</td><td>6</td><td>8</td></tr>
+    <tr><td>/28</td><td>255.255.255.240</td><td>14</td><td>16</td></tr>
+    <tr><td>/27</td><td>255.255.255.224</td><td>30</td><td>32</td></tr>
+    <tr><td>/26</td><td>255.255.255.192</td><td>62</td><td>64</td></tr>
+    <tr><td>/25</td><td>255.255.255.128</td><td>126</td><td>128</td></tr>
+  </table>
+
+  <h2>Device IP Configuration Table</h2>
+  <table>
+    <tr><th>Device</th><th>Interface</th><th>IP Address / Mask</th><th>Default Gateway</th></tr>
+    <tr><td>CS-Department</td><td>G0/0</td><td>192.168.1.126/27</td><td>N/A</td></tr>
+    <tr><td>CS-Department</td><td>G0/0</td><td>2001/db8:acad:a::1/64</td><td>N/A</td></tr>
+    <tr><td>CS-Department</td><td>G0/1</td><td>192.168.1.158</td><td>N/A</td></tr>
+    <tr><td>CS-Department</td><td>G0/1</td><td>2001:db8:acad:b::1/64</td><td>N/A</td></tr>
+    <tr><td>CS-Department</td><td>G0/1</td><td>fe80::1</td><td>N/A</td></tr>
+    <tr><td>SW214-A</td><td>SVI</td><td>192.168.1.157</td><td>192.168.1.158</td></tr>
+    <tr><td>124-1</td><td>NIC</td><td>192.168.1.97/27</td><td>192.168.1.126</td></tr>
+    <tr><td>124-1</td><td>NIC</td><td>2001:db8:acad:a:ff/64</td><td>fe80::1</td></tr>
+    <tr><td>124-5</td><td>NIC</td><td>192.168.1.98/27</td><td>192.168.1.126</td></tr>
+    <tr><td>124-5</td><td>NIC</td><td>2001:db8:acad:a:15/64</td><td>fe80::1</td></tr>
+    <tr><td>214-1</td><td>NIC</td><td>192.168.1.145/28</td><td>192.168.1.158</td></tr>
+    <tr><td>214-1</td><td>NIC</td><td>2001:db8:acad:b:ff/64</td><td>fe80::1</td></tr>
+    <tr><td>Server</td><td>NIC</td><td>192.168.1.146/28</td><td>192.168.1.158</td></tr>
+    <tr><td>Server</td><td>NIC</td><td>2001:db8:acad:b:15/64</td><td>fe80::1</td></tr>
+  </table>
+</body>
+</html>
