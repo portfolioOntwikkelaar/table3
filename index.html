@@ -111,6 +111,14 @@
     int vlan 1;
     description SVI for Management;
     no shut;
+
+    ! switch 124c
+    int vlan 1;
+    ip add 192.168.1.125 255.255.255.224;
+    description Connected to...
+    no shut
+    exit;
+    ip default-gateway 192.168.1.126
   </div>
 
   <h2>CIDR Subnet Table</h2>
